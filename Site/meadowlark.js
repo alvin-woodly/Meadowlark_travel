@@ -4,6 +4,10 @@ const express = require("express");
 const app = express();
 //import express-handlebars:
 const expressHandlebars = require("express-handlebars");
+//importing our custom fortune cookies module:
+const fortune = require("./lib/fortune");
+
+
 //configure a port for the server to listen to:
 const port = process.env.PORT ||3000;
 
@@ -35,8 +39,8 @@ app.use(express.static(__dirname + "/public"));
 //using express to get the "about file" as requested in the get http request
 //http get handled by express takes 2 parameters, the path and a function:
 app.get("/",(req,resp)=>{
-    const userfortune = fortunes[Math.floor(Math.random() * fortunes.length)];
-    resp.render("home",{fortune: userfortune}); // we can pass an options object as second parameter, which will get used by a view
+   // const userfortune = fortunes[Math.floor(Math.random() * fortunes.length)];
+    resp.render("home",{fortune: fortune.getFortune()}); // we can pass an options object as second parameter, which will get used by a view
     //the view must have a {{variable_name}} that matches this a property of this object
     //in this example "fortune" is used in the view
     //check the home.handlebars page
