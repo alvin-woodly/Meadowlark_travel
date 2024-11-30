@@ -24,8 +24,7 @@ const fortunes =["Conquer your fears or they will conquer you.",
 *app.get is used for GET http methods.
 *app.use is used for configuring middleware, it can have a path specified,if no path is given it will work on ALL http requests.
 */
-
-
+ 
 
 
 //configure a custom template engine (we are using express-handlebars):
