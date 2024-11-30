@@ -1,0 +1,5 @@
+-New features
+-Changes in existing features
+-Removed features
+-Changes in testing technologies or techniques
+-Defects that were missed by the QA plan

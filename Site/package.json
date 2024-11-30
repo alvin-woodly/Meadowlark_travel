@@ -4,12 +4,15 @@
   "description": "A travel wesite with API example from the book",
   "main": "meadowlark.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "Alvin Woodly",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.21.1", 
+    "express": "^4.21.1",
     "express-handlebars": "^8.0.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }

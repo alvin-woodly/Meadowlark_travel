@@ -4,6 +4,8 @@ const express = require("express");
 const app = express();
 //import express-handlebars:
 const expressHandlebars = require("express-handlebars");
+//import handlers.js (contains our functionality for handling http requests):
+const handlers = require("./lib/handlers");
 //importing our custom fortune cookies module:
 const fortune = require("./lib/fortune");
 
@@ -37,30 +39,17 @@ app.set('view engine', 'handlebars');
 app.use(express.static(__dirname + "/public"));
 //using express to get the "about file" as requested in the get http request
 //http get handled by express takes 2 parameters, the path and a function:
-app.get("/",(req,resp)=>{
-   // const userfortune = fortunes[Math.floor(Math.random() * fortunes.length)];
-    resp.render("home",{fortune: fortune.getFortune()}); // we can pass an options object as second parameter, which will get used by a view
-    //the view must have a {{variable_name}} that matches this a property of this object
-    //in this example "fortune" is used in the view
-    //check the home.handlebars page
-})
+app.get("/",handlers.getHome)
 
-app.get("/about",(req,resp)=>{
-    resp.render("about");
+app.get("/about",handlers.getAbout
     //the .render function will render views.
-})
+)
 
 //use express to write a custom 404 page response
-app.use((req,resp)=>{
-    resp.status(404);
-    resp.render("404");
-});
+app.use(handlers.getPageError);
 
 //using express to write a custom error 500 page
-app.use((err,req,resp,next)=>{
-    resp.status(500);
-    resp.render("500");
-});
+app.use(handlers.getServerError);
 
 //tell express to listen on a port:
 app.listen(port,()=>{console.log(`Express started on http://localhost:${port} press ctrl+c to terminate`)});
