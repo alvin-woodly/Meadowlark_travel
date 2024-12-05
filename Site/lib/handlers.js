@@ -10,12 +10,15 @@ exports.getHome = (req,res)=>{
 
  exports.getAbout = (req,res)=>{
     res.render("about",{fortune: fortuneValue.getFortune()});
+    
  }
 
  exports.getPageError = (req,res)=>{
     res.render("404");
  }
 
+ /* eslint-disable no-unused-vars */
  exports.getServerError = (err,req,res,next)=>{
     res.render("500");
+    /* eslint-disable no-unused-vars */
  }

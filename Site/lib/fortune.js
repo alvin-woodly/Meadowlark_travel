@@ -6,6 +6,7 @@ const fortuneCookies =["Conquer your fears or they will conquer you.",
 
     
 exports.getFortune = ()=>{
-    const idx = Math.floor(Math.random* fortunes.length);
+    const idx = Math.floor(Math.random() * fortuneCookies.length);
+    console.log(idx);
     return fortuneCookies[idx];
 }
