@@ -6,6 +6,9 @@ const app = express();
 const expressHandlebars = require("express-handlebars");
 //import handlers.js (contains our functionality for handling http requests):
 const handlers = require("./lib/handlers");
+//import bodyparser:
+const bodyparser = require("body-parser");
+
 //importing our custom fortune cookies module:
 const fortune = require("./lib/fortune");
 
@@ -44,6 +47,13 @@ app.disable("x-powered-by");
 
 /*eslint-disable no-undef */
 app.use(express.static(__dirname + "/public"));
+
+//configure body parser so we can parse encoded HTTP to JSON:
+app.use(bodyparser.json());
+
+/* //*configure body parser so we can parse encoded HTTP body payloads:
+app.use(bodyparser.urlencoded({extended:true}));
+*/
 /*eslint-disable no-undef */
 //using express to get the "about file" as requested in the get http request
 //http get handled by express takes 2 parameters, the path and a function:
@@ -60,9 +70,24 @@ app.get("/about",handlers.getAbout
     //the .render function will render views.
 )
 
+//handle form data:
+app.get("/signup-newsletter", handlers.newsletterSignUp);
+
+//process form data:
+app.post("/api/newsletter-signup",handlers.api.newsletterSignUp);
+/*
+*this is the old way to handle forms,modernized handling uses FETCH API
+get path for getting the form view
+app.get("/signup-newsletter", handlers.newsletterSignUp);
+
+ post path for when form is submitted:
+app.post("newsletter-signup/process", handlers.newsletterSignupProcess);
+
+ after submission redirect with 303:
+app.get("newsletter-signup/thank-you", handlers.newsletterSignupThankYou);
+*/
 //use express to write a custom 404 page response
 app.use(handlers.getPageError);
-
 //using express to write a custom error 500 page
 app.use(handlers.getServerError);
 

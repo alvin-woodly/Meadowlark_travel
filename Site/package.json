@@ -5,11 +5,12 @@
   "main": "meadowlark.js",
   "scripts": {
     "test": "jest",
-    "lint" : "eslint meadowlark.js lib"
+    "lint": "eslint meadowlark.js lib"
   },
   "author": "Alvin Woodly",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.20.3",
     "express": "^4.21.1",
     "express-handlebars": "^8.0.1"
   },
