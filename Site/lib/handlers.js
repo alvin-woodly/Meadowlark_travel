@@ -35,3 +35,9 @@ exports.getHome = (req,res)=>{
       res.send({result: "success"});
    }
  }
+
+ exports.vacationPhotoContestProcess =(req,res,fields,files)=>{
+    console.log(`fields: ${fields}`);
+    console.log(`files: ${files}`);
+   res.send({result:"Success"});
+ }
