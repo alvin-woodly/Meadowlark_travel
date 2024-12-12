@@ -16,10 +16,40 @@ const {credentials} = require("./config");
 const cookieparser = require("cookie-parser");
 //import express-session , preferable over cookies, it does require a cookie:
 const express_session = require("express-session");
+//import nodemailer for emails:
+const nodemailer = require("nodemailer");
+const nodemailersendgrid = require("nodemailer-sendgrid");
+//const mailguntransport = require("nodemailer-mailgun-transport");
+
+
+//create instance:
+const transport = nodemailer.createTransport(nodemailersendgrid({apiKey:credentials.sendgrid.API_KEY}));
+
+//test mail to one sender:
+(async()=>{
+    try{
+      const result =   await transport.sendMail({
+            from:"alvinwoodly@outlook.com",
+            to:"alvinwoodly@gmail.com",
+            subject:"Your Meadowlark travel tour",
+            html:"<h1>Your meadowlark booking was successful!</h1> <br> <p>Thank you for booking with us!</p>",
+           text:"Thank you for booking a trip with meadowlark travel, we look forward to your visit!"
+        });
+        console.log(`mail was sent  ${result.accepted}`);
+    }
+    catch(err)
+    {
+        console.error(`error occurred , ${err} , ${err.message}`);
+    }
+ })();
+
+
 
 //importing our custom fortune cookies module:
 const fortune = require("./lib/fortune");
 
+//importing simple-middleware:
+const simplemiddleware = require("./lib/middleware/simple-middleware");
 
 //configure a port for the server to listen to:
 const port = process.env.PORT ||3000;
@@ -49,10 +79,6 @@ app.set('view engine', 'handlebars');
 //this enables server-side view caching, so it wont recompile the view,only when it changes. 
 app.set("view cache",true);
 
-//disable x-powere-by to prevent express from sending server info:
-app.disable("x-powered-by");
-
-
 /*eslint-disable no-undef */
 app.use(express.static(__dirname + "/public"));
 
@@ -63,15 +89,84 @@ app.use(cookieparser(credentials.cookieSecret));
 //!note that the docs say its no longer required.
 app.use(express_session({resave:false,saveUninitialized:false, secret:credentials.cookieSecret})); 
 
-
 //configure body parser so we can parse encoded HTTP to JSON:
 app.use(bodyparser.json());
 
+//disable x-powere-by to prevent express from sending server info:
+app.disable("x-powered-by");
 /* //*configure body parser so we can parse encoded HTTP body payloads:
 app.use(bodyparser.urlencoded({extended:true}));
 */
 /*eslint-disable no-undef */
 //using express to get the "about file" as requested in the get http request
+
+
+//!testing middleware:
+/*
+app.use(simplemiddleware.simplelog);
+
+app.use(simplemiddleware.terminator);
+
+app.use(simplemiddleware.neverCalled);
+*/
+
+/*
+app.use((req,res,next)=>{
+    console.log("\n\nALLWAYS");
+    next();
+});
+
+app.get('/a', (req, res) => {
+    console.log('/a: route terminated');
+    res.send('a');
+});
+
+app.get('/a', (req, res) => {
+    console.log('/a: never called');
+});
+
+app.get('/b', (req, res, next) => {
+    console.log('/b: route not terminated');
+    next();
+});
+app.use((req, res, next) => {
+    console.log('SOMETIMES');
+    next();
+});
+
+app.get('/b', (req, res, next) => {
+    console.log('/b (part 2): error thrown' );
+    throw new Error('b failed');
+});
+
+app.use('/b', (err, req, res, next) => {
+    console.log('/b error detected and passed on');
+    next(err);
+});
+
+app.get('/c', (err, req) => {
+    console.log('/c: error thrown');
+    throw new Error('c failed');
+});
+
+app.use('/c', (err, req, res, next) => {
+    console.log('/c: error detected but not passed on');
+    next();
+});
+
+app.use((err, req, res, next) => {
+    console.log('unhandled error detected: ' + err.message);
+    res.send('500 - server error');
+});
+
+app.use((req, res) => {
+    console.log('route not handled');
+    res.send('404 - not found');
+});
+    
+*/
+
+
 //http get handled by express takes 2 parameters, the path and a function:
 app.get("/",handlers.getHome);
 
@@ -156,7 +251,7 @@ app.use(handlers.getServerError);
 //app.listen(port,()=>{console.log(`Express started on http://localhost:${port} press ctrl+c to terminate`)});
 if(require.main === module)
 {
-    app.listen(port,()=>{console.log(`Express started on http://localhost:${port} press ctrl+c to terminate`)});
+    app.listen(port,()=>{console.log(`Express started in ${app.get("env")} mode, on http://localhost:${port} press ctrl+c to terminate`)});
 }
 else{
     module.exports = app;

@@ -7,6 +7,7 @@
     "test": "jest",
     "lint": "eslint meadowlark.js lib"
   },
+  "type": "commonjs",
   "author": "Alvin Woodly",
   "license": "ISC",
   "dependencies": {
@@ -15,7 +16,10 @@
     "express": "^4.21.1",
     "express-handlebars": "^8.0.1",
     "express-session": "^1.18.1",
-    "multiparty": "^4.2.3"
+    "multiparty": "^4.2.3",
+    "nodemailer": "^6.9.16",
+    "nodemailer-mailgun-transport": "^2.1.5",
+    "nodemailer-sendgrid": "^1.0.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.16.0",
