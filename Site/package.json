@@ -16,6 +16,7 @@
     "express": "^4.21.1",
     "express-handlebars": "^8.0.1",
     "express-session": "^1.18.1",
+    "morgan": "^1.10.0",
     "multiparty": "^4.2.3",
     "nodemailer": "^6.9.16",
     "nodemailer-mailgun-transport": "^2.1.5",

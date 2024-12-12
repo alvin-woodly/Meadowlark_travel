@@ -19,13 +19,52 @@ const express_session = require("express-session");
 //import nodemailer for emails:
 const nodemailer = require("nodemailer");
 const nodemailersendgrid = require("nodemailer-sendgrid");
-//const mailguntransport = require("nodemailer-mailgun-transport");
+//import morgan for environment logging:
+const morgan = require("morgan");
+//import fs for morgan logging
+const fs = require("fs");
+
+
+//import clusters:
+const cluster = require("cluster");
+
+app.use((req,res,next)=>{
+    console.log(`$ Worker ${cluster.worker.id} received request`);
+    next();
+});
+
+
+
+
+
+
+
+
+
+
+switch(app.get("env")){
+    case "development":
+        app.use(morgan("dev"));
+        break;
+    
+    case "production":
+        try{
+            const stream = fs.createWriteStream(__dirname +"/access.log",{flags:'a'});
+            app.use(morgan("combined",{stream:stream}));
+        }
+        catch(err)
+        {
+            console.log(`${err} , ${err.message}`);
+        }
+        break;
+}
+
 
 
 //create instance:
 const transport = nodemailer.createTransport(nodemailersendgrid({apiKey:credentials.sendgrid.API_KEY}));
-
 //test mail to one sender:
+/* //*disabled for now
 (async()=>{
     try{
       const result =   await transport.sendMail({
@@ -42,7 +81,7 @@ const transport = nodemailer.createTransport(nodemailersendgrid({apiKey:credenti
         console.error(`error occurred , ${err} , ${err.message}`);
     }
  })();
-
+*/
 
 
 //importing our custom fortune cookies module:
@@ -166,6 +205,9 @@ app.use((req, res) => {
     
 */
 
+//proof clusters are handling requests (probably wont change often because node is optimized):
+
+
 
 //http get handled by express takes 2 parameters, the path and a function:
 app.get("/",handlers.getHome);
@@ -249,10 +291,18 @@ app.use(handlers.getServerError);
 
 //tell express to listen on a port:
 //app.listen(port,()=>{console.log(`Express started on http://localhost:${port} press ctrl+c to terminate`)});
-if(require.main === module)
+
+//function for starting server
+function startServer(port)
 {
     app.listen(port,()=>{console.log(`Express started in ${app.get("env")} mode, on http://localhost:${port} press ctrl+c to terminate`)});
 }
+
+
+if(require.main === module)
+{
+   startServer(port);
+}
 else{
-    module.exports = app;
+    module.exports = startServer;
 }
