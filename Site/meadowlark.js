@@ -24,24 +24,18 @@ const morgan = require("morgan");
 //import fs for morgan logging
 const fs = require("fs");
 
-
 //import clusters:
+/*
+proof clusters are handling requests (probably wont change often because node is optimized):
 const cluster = require("cluster");
 
 app.use((req,res,next)=>{
     console.log(`$ Worker ${cluster.worker.id} received request`);
     next();
 });
+*/
 
-
-
-
-
-
-
-
-
-
+//configure morgan depending on environment
 switch(app.get("env")){
     case "development":
         app.use(morgan("dev"));
@@ -89,6 +83,8 @@ const fortune = require("./lib/fortune");
 
 //importing simple-middleware:
 const simplemiddleware = require("./lib/middleware/simple-middleware");
+const { error } = require("console");
+const { nextTick } = require("process");
 
 //configure a port for the server to listen to:
 const port = process.env.PORT ||3000;
@@ -205,13 +201,24 @@ app.use((req, res) => {
     
 */
 
-//proof clusters are handling requests (probably wont change often because node is optimized):
+
 
 
 
 //http get handled by express takes 2 parameters, the path and a function:
 app.get("/",handlers.getHome);
 
+
+//testing uncaught exceptions:
+//simple (this isnt so bad):
+app.get("/fail",(req,res)=>{
+    throw new Error("Nope!");
+});
+
+
+app.get("/epic-fail",(req,res)=>{
+    process.nextTick(()=> {throw new Error("kaboom!");});
+});
 
 //cookie testing:
 app.get("/cookies",(req,res)=>{
@@ -288,6 +295,14 @@ app.post("/contest/vacation-photo/:year/:month",(req,res)=>{
 app.use(handlers.getPageError);
 //using express to write a custom error 500 page
 app.use(handlers.getServerError);
+
+/*uncaught exceptionhandling //*(always implement this!): */
+process.on("uncaughtException",err=>{
+    console.error(`Fatal error: uncaught exception, server shut down \n ${err.stack}`);
+    // do any cleanup you need to do here...close database connections, etc.
+    process.exit(1);
+});
+
 
 //tell express to listen on a port:
 //app.listen(port,()=>{console.log(`Express started on http://localhost:${port} press ctrl+c to terminate`)});

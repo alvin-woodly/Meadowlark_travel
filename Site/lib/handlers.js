@@ -1,5 +1,13 @@
 const fortuneValue = require("./fortune");
 
+const pathUtils = require("path");
+const fs = require("fs");
+
+//create a directory to store vacationphotos:
+const dataDir = pathUtils.resolve(__dirname,"..","data");
+const vacationPhotosDir = pathUtils.resolve(dataDir,"vacation-photos");
+
+
 exports.getHome = (req,res)=>{
     // const userfortune = fortunes[Math.floor(Math.random() * fortunes.length)];
      res.render("home"); // we can pass an options object as second parameter, which will get used by a view
@@ -19,7 +27,7 @@ exports.getHome = (req,res)=>{
 
  /* eslint-disable no-unused-vars */
  exports.getServerError = (err,req,res,next)=>{
-    res.render("500");
+   res.status(500).render("500",{error:err});
     /* eslint-disable no-unused-vars */
  };
 

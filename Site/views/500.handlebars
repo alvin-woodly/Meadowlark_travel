@@ -1,1 +1,10 @@
 <h1>500 - server error</h1> 
+
+<p>an issue has occurred on the serverside</p>
+
+{{#if error}}
+    <h2 style="color: red;">Error:</h2>
+    <p>{{error}}</p> <br>
+    <h2 style="color: red;">stacktrace:</h2>
+    <p><pre>{{error.stack}}</pre></p>
+{{/if}}
