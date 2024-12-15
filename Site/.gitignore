@@ -135,3 +135,6 @@ dist
 
 #ignore morgan logs
 *.log
+
+#ignore stored data files from clients:
+/data

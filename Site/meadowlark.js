@@ -23,6 +23,11 @@ const nodemailersendgrid = require("nodemailer-sendgrid");
 const morgan = require("morgan");
 //import fs for morgan logging
 const fs = require("fs");
+//import db.js for db initialization:
+//require("./mongodb/db.js");
+
+//import our sequelize db init script to run an authentication:
+require("./sql/initdb");
 
 //import clusters:
 /*
@@ -208,6 +213,9 @@ app.use((req, res) => {
 //http get handled by express takes 2 parameters, the path and a function:
 app.get("/",handlers.getHome);
 
+
+//get vacations using mongodb
+app.get("/vacations", handlers.listVacations);
 
 //testing uncaught exceptions:
 //simple (this isnt so bad):
