@@ -3,7 +3,12 @@ const fortuneValue = require("./fortune");
 const pathUtils = require("path");
 const fs = require("fs");
 
-const db = require("../mongodb/db");
+//const db = require("../mongodb/db");
+const {addVacationInSeasonListener} = require("../sql/models/vacation-in-season-listeners");
+
+const {getVacations} = require("../sql/models/vacation");
+
+
 
 //create a directory to store vacationphotos:
 const dataDir = pathUtils.resolve(__dirname,"..","data");
@@ -79,17 +84,8 @@ exports.getHome = (req,res)=>{
 
 
  exports.listVacations = async(req,res)=>{
-   const vacations= await db.getVacations({available:true});
-   const context={
-         vacations : vacations.map(vacation=>({
-         sku:vacation.sku,
-         name:vacation.name,
-         description:vacation.description,
-         price:"$" + vacation.price.toFixed(2),
-         inSeason:vacation.inSeason
-      }))
-   }
-   res.render("vacations",context);
+   const vacationlist= await getVacations();
+   res.render("vacations",{vacations:vacationlist});
  }
 
 
@@ -99,7 +95,10 @@ exports.getHome = (req,res)=>{
 
 
  exports.notifyWhenInSeasonProcess = async (req,res)=>{
+  console.log("request body: " , req.body);
    const{email,sku} = req.body;
-   await db.addVacationInSeasonListener(email,sku);
+   console.log(email);
+   console.log(sku);
+   await addVacationInSeasonListener(email,sku);
    return res.redirect(303,"/vacations");
  }

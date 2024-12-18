@@ -27,7 +27,12 @@ const fs = require("fs");
 //require("./mongodb/db.js");
 
 //import our sequelize db init script to run an authentication:
-require("./sql/initdb");
+require("./sql/db");
+
+//seedd the database:
+require("./sql/seeder");
+
+
 
 //import clusters:
 /*
@@ -128,6 +133,9 @@ app.use(cookieparser(credentials.cookieSecret));
 //configure express-session /* //*AFTER */ cookie parser:
 //!note that the docs say its no longer required.
 app.use(express_session({resave:false,saveUninitialized:false, secret:credentials.cookieSecret})); 
+
+//so we can parse form data:
+app.use(express.urlencoded({extended:true}));
 
 //configure body parser so we can parse encoded HTTP to JSON:
 app.use(bodyparser.json());
@@ -298,6 +306,11 @@ app.post("/contest/vacation-photo/:year/:month",(req,res)=>{
     })
 }) 
 
+app.get("/notify-me-when-in-season/:sku",(req,res)=>{
+    res.render("notify-me-when-in-season",{sku:req.params.sku});
+})
+
+app.post("/notify-me-when-in-season", handlers.notifyWhenInSeasonProcess);
 
 //use express to write a custom 404 page response
 app.use(handlers.getPageError);
